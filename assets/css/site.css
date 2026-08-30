@@ -450,7 +450,7 @@ li + li { margin-top: 0.45rem; }
   background: var(--color-surface);
 }
 .flipbook__slide > a, .work-example__figure > a { display: block; }
-.flipbook__slide img, .work-example__figure img { width: 100%; height: auto; background: var(--color-surface-2); }
+.flipbook__slide img, .flipbook__slide video, .work-example__figure img, .work-example__figure video { display: block; width: 100%; height: auto; background: var(--color-surface-2); }
 .flipbook__slide .artifact-caption, .work-example__figure .artifact-caption { display: grid; gap: 0.35rem; }
 .flipbook__slide .artifact-label, .work-example__figure .artifact-label { margin: 0; }
 .flipbook__slide .artifact-fullsize, .work-example__figure .artifact-fullsize { margin-top: var(--space-1); }

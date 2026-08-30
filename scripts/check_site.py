@@ -20,7 +20,7 @@ SOCIAL_IMAGE_URL = (
 )
 WALKTHROUGH_URL = "https://www.youtube.com/watch?v=nUyF6JenkFE"
 WALKTHROUGH_THUMBNAIL = (
-    "/assets/images/healthcare/evidence/adhd-interactive-video-menu.png"
+    "/assets/images/healthcare/evidence/adhd-decision-practice-framed.png"
 )
 EXPECTED_HTML = [
     Path("index.html"),
@@ -47,18 +47,26 @@ REQUIRED_FILES = [
 ]
 REQUIRED_EVIDENCE = [
     Path("assets/images/healthcare/evidence/adhd-course-overview-safe.png"),
+    Path("assets/images/healthcare/evidence/adhd-course-overview-framed.png"),
     Path("assets/images/healthcare/evidence/adhd-chaptered-lecture-video.png"),
+    Path("assets/images/healthcare/evidence/adhd-chaptered-lecture-framed.png"),
     Path("assets/images/healthcare/evidence/adhd-interactive-timeline.png"),
+    Path("assets/images/healthcare/evidence/adhd-interactive-timeline-framed.png"),
     Path("assets/images/healthcare/evidence/adhd-interactive-video-menu.png"),
+    Path("assets/images/healthcare/evidence/adhd-decision-practice-framed.png"),
     Path("assets/images/curriculum/evidence/tfac-life-skills-manual-spread.png"),
     Path("assets/images/curriculum/evidence/tfac-equity-handout.png"),
     Path("assets/images/curriculum/evidence/tfac-child-protection-flow-chart.png"),
     Path("assets/images/healthcare/applied-instructional-design-process.svg"),
     Path("assets/images/curriculum/participatory-learning-methodology.svg"),
     Path("assets/images/curriculum/tfac-eswatini-facilitation-cycle.svg"),
+    Path("assets/images/curriculum/evidence/tfac-eswatini-facilitation-public.jpg"),
     Path("assets/images/refugee/evidence/refugee-online-learning-overview.png"),
+    Path("assets/images/refugee/evidence/refugee-online-pathway-framed.png"),
     Path("assets/images/refugee/evidence/refugee-education-scenario.png"),
+    Path("assets/images/refugee/evidence/refugee-education-scenario-framed.png"),
     Path("assets/images/refugee/evidence/refugee-confidentiality-check.png"),
+    Path("assets/images/refugee/evidence/refugee-confidentiality-check-framed.png"),
     Path("assets/images/refugee/evidence/refugee-workshop-structure.png"),
     Path("assets/images/refugee/evidence/refugee-participatory-facilitation-guidance.png"),
     Path("assets/images/refugee/evidence/refugee-reflective-practice-cycle.png"),
@@ -131,7 +139,7 @@ PROHIBITED_CASE_HEADINGS = (
 )
 EXPECTED_WORK_EXAMPLES = {
     Path("work/healthcare-simulation.html"): {"examples": 2, "flipbooks": [4], "singles": 1},
-    Path("work/life-skills-curriculum.html"): {"examples": 3, "flipbooks": [3], "singles": 2},
+    Path("work/life-skills-curriculum.html"): {"examples": 3, "flipbooks": [3, 2], "singles": 1},
     Path("work/refugee-sponsorship.html"): {"examples": 2, "flipbooks": [3, 3], "singles": 0},
 }
 
