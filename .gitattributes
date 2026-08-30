@@ -1,0 +1,2 @@
+# Preserve intentional Markdown line breaks.
+*.md whitespace=-blank-at-eol

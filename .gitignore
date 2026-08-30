@@ -1,0 +1,24 @@
+# Operating system and editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Never commit private working material
+private/
+working/
+source-materials/
+raw-assets/
+
+# Large creative source files
+*.psd
+*.psb
+*.aep
+*.prproj
+*.ai
+*.indd
+
+# Temporary exports
+*.tmp
+*.bak
+*~

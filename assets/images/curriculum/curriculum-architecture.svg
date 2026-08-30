@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" role="img" aria-labelledby="title desc">
+  <title id="title">Life-skills curriculum architecture</title>
+  <desc id="desc">Programme goals lead to thematic units, session outcomes, participatory activity, reflection and application.</desc>
+  <rect width="960" height="560" rx="24" fill="#151b23"/>
+  <g font-family="system-ui" text-anchor="middle" font-weight="700">
+    <g fill="#1b2430" stroke="#7fdccb" stroke-width="2"><rect x="55" y="135" width="170" height="90" rx="14"/><rect x="270" y="135" width="170" height="90" rx="14"/><rect x="485" y="135" width="170" height="90" rx="14"/><rect x="700" y="135" width="170" height="90" rx="14"/><rect x="485" y="335" width="170" height="90" rx="14"/><rect x="270" y="335" width="170" height="90" rx="14"/></g>
+    <g fill="#f5f2eb" font-size="18"><text x="140" y="174">Programme</text><text x="140" y="198">goals</text><text x="355" y="174">Thematic</text><text x="355" y="198">units</text><text x="570" y="174">Session</text><text x="570" y="198">outcomes</text><text x="785" y="174">Participatory</text><text x="785" y="198">activity</text><text x="570" y="374">Reflection</text><text x="570" y="398">and debrief</text><text x="355" y="374">Application</text><text x="355" y="398">and adaptation</text></g>
+  </g>
+  <g fill="none" stroke="#7fdccb" stroke-width="4" marker-end="url(#a)"><path d="M225 180h45"/><path d="M440 180h45"/><path d="M655 180h45"/><path d="M785 225v155H655"/><path d="M485 380h-45"/></g>
+  <path d="M355 335c0-72-215-25-215-110" fill="none" stroke="#f2a65a" stroke-width="4" stroke-dasharray="8 8" marker-end="url(#b)"/>
+  <text x="480" y="505" text-anchor="middle" fill="#bac3ce" font-family="system-ui" font-size="18">Progression connects a broad goal to something facilitators and learners can do.</text>
+  <defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0l10 5-10 5z" fill="#7fdccb"/></marker><marker id="b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0l10 5-10 5z" fill="#f2a65a"/></marker></defs>
+</svg>
