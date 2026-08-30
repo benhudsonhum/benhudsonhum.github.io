@@ -39,20 +39,18 @@ REQUIRED_FILES = [
     Path("assets/css/site.css"),
     Path("assets/documents/ben-hudson-instructional-designer-resume.pdf"),
     Path("assets/images/common/social-preview.png"),
-    Path("assets/images/common/ben-hudson-portrait-hero-800.jpg"),
-    Path("assets/images/common/ben-hudson-portrait-hero-1400.jpg"),
-    Path("assets/images/curriculum/evidence/tfac-equity-card-16x10.png"),
-    Path("assets/images/refugee/evidence/refugee-online-learning-card-16x10.png"),
+    Path("assets/images/common/ben-hudson-portrait-520x650.jpg"),
+    Path("assets/images/common/ben-hudson-portrait-696x870.jpg"),
 ]
 REQUIRED_EVIDENCE = [
     Path("assets/images/healthcare/evidence/adhd-course-overview-safe.png"),
-    Path("assets/images/healthcare/evidence/adhd-course-overview-safe-preview.png"),
     Path("assets/images/healthcare/evidence/adhd-chaptered-lecture-video.png"),
     Path("assets/images/healthcare/evidence/adhd-interactive-timeline.png"),
     Path("assets/images/healthcare/evidence/adhd-interactive-video-menu.png"),
     Path("assets/images/curriculum/evidence/tfac-life-skills-manual-spread.png"),
     Path("assets/images/curriculum/evidence/tfac-equity-handout.png"),
     Path("assets/images/curriculum/evidence/tfac-child-protection-flow-chart.png"),
+    Path("assets/images/curriculum/curriculum-architecture.svg"),
     Path("assets/images/curriculum/tfac-eswatini-facilitation-cycle.svg"),
     Path("assets/images/refugee/evidence/refugee-online-learning-overview.png"),
     Path("assets/images/refugee/evidence/refugee-education-scenario.png"),
@@ -93,11 +91,20 @@ FORBIDDEN_PUBLIC_SUFFIXES = {".exe", ".zip", ".rar", ".7z"}
 ASSET_WARNING_BYTES = 1_000_000
 RASTER_SUFFIXES = {".jpg", ".jpeg", ".png"}
 HOMEPAGE_PREVIEWS = {
-    Path("assets/images/healthcare/evidence/adhd-course-overview-safe-preview.png"),
-    Path("assets/images/curriculum/evidence/tfac-equity-card-16x10.png"),
-    Path("assets/images/refugee/evidence/refugee-online-learning-card-16x10.png"),
+    Path("assets/images/home/healthcare-searchable-video.jpg"),
+    Path("assets/images/home/healthcare-interactive-reference.jpg"),
+    Path("assets/images/home/healthcare-decision-practice.jpg"),
+    Path("assets/images/home/curriculum-90-activity-manual.jpg"),
+    Path("assets/images/home/curriculum-visual-learning-resource.jpg"),
+    Path("assets/images/home/curriculum-safeguarding-pathway.jpg"),
+    Path("assets/images/home/refugee-online-pathway.jpg"),
+    Path("assets/images/home/refugee-scenario-practice.jpg"),
+    Path("assets/images/home/refugee-workshop-design.jpg"),
 }
 OBSOLETE_HOMEPAGE_PREVIEWS = {
+    "adhd-course-overview-safe-preview.png",
+    "tfac-equity-card-16x10.png",
+    "refugee-online-learning-card-16x10.png",
     "tfac-equity-handout-preview.png",
     "refugee-online-learning-preview.png",
 }
@@ -317,6 +324,75 @@ def main() -> int:
             match = re.search(r'<img\b[^>]*src="([^"]*/evidence/[^"]+)"', block, flags=re.I)
             if match and not re.search(r'<a\b[^>]*class="[^"]*artifact-fullsize[^"]*"', block, flags=re.I):
                 errors.append(f"detailed evidence missing full-size link in {relative.as_posix()}: {match.group(1)}")
+        if relative.parent == Path("work"):
+            story_openings = re.findall(
+                r'<div\b[^>]*class="[^"]*\bvisual-story\b[^"]*"[^>]*>',
+                html,
+                flags=re.I,
+            )
+            if len(story_openings) != 1:
+                errors.append(
+                    f"expected one visual-story component, found {len(story_openings)}: {relative.as_posix()}"
+                )
+            story_figures = re.findall(
+                r'<figure\b[^>]*class="[^"]*visual-story__item[^"]*"[^>]*>.*?</figure>',
+                html,
+                flags=re.I | re.S,
+            )
+            if len(story_figures) != 5:
+                errors.append(
+                    f"expected five visual-story figures, found {len(story_figures)}: {relative.as_posix()}"
+                )
+            captions: list[str] = []
+            for position, block in enumerate(story_figures, start=1):
+                image_match = re.search(r'<img\b([^>]*)>', block, flags=re.I | re.S)
+                if not image_match:
+                    errors.append(f"visual-story figure {position} has no image: {relative.as_posix()}")
+                else:
+                    image_tag = image_match.group(1)
+                    for attribute in ("src", "alt", "width", "height"):
+                        match = re.search(rf'\b{attribute}="([^"]*)"', image_tag, flags=re.I)
+                        if not match or not match.group(1).strip():
+                            errors.append(
+                                f"visual-story figure {position} image missing {attribute}: {relative.as_posix()}"
+                            )
+                caption_match = re.search(r'<figcaption\b[^>]*>(.*?)</figcaption>', block, flags=re.I | re.S)
+                if not caption_match:
+                    errors.append(f"visual-story figure {position} has no caption: {relative.as_posix()}")
+                    continue
+                caption_html = caption_match.group(1)
+                caption_text = " ".join(visible_text(caption_html).split()).casefold()
+                captions.append(caption_text)
+                if not all(token in caption_html for token in ("artifact-label", "<strong", "artifact-fullsize")):
+                    errors.append(
+                        f"visual-story figure {position} lacks label, title or full-size link: {relative.as_posix()}"
+                    )
+                explanation_match = re.search(
+                    r'</strong>\s*<span>(.*?)</span>', caption_html, flags=re.I | re.S
+                )
+                explanation = (
+                    " ".join(visible_text(explanation_match.group(1)).split())
+                    if explanation_match
+                    else ""
+                )
+                explanation_words = re.findall(r"[\w’'-]+", explanation, flags=re.UNICODE)
+                if not 18 <= len(explanation_words) <= 35:
+                    errors.append(
+                        f"visual-story figure {position} explanation is not 18-35 words ({len(explanation_words)}): {relative.as_posix()}"
+                    )
+                if image_match:
+                    alt_match = re.search(r'\balt="([^"]*)"', image_match.group(1), flags=re.I)
+                    alt_text = " ".join((alt_match.group(1) if alt_match else "").split()).casefold()
+                    if alt_text and alt_text == explanation.casefold():
+                        errors.append(
+                            f"visual-story figure {position} alt duplicates its caption: {relative.as_posix()}"
+                        )
+            if len(captions) != len(set(captions)):
+                errors.append(f"visual-story captions are not unique: {relative.as_posix()}")
+            if "case-toc" in html:
+                errors.append(f"case-study table of contents remains: {relative.as_posix()}")
+            if "About the evidence" in visible_text(html):
+                errors.append(f"public About the evidence copy remains: {relative.as_posix()}")
         upper_visible = visible_text(html).upper()
         for marker in FORBIDDEN_VISIBLE:
             if marker in upper_visible:
@@ -378,7 +454,7 @@ def main() -> int:
     if not hero:
         errors.append("homepage hero section not found")
     else:
-        if "<picture" not in hero or "ben-hudson-portrait-hero-800.jpg" not in hero or "ben-hudson-portrait-hero-1400.jpg" not in hero:
+        if "<picture" not in hero or "ben-hudson-portrait-520x650.jpg" not in hero or "ben-hudson-portrait-696x870.jpg" not in hero:
             errors.append("homepage hero does not use both portrait derivatives in a picture element")
         if "system-map.svg" in hero:
             errors.append("system map remains in the homepage hero")
@@ -402,20 +478,37 @@ def main() -> int:
     )
     project_sources: set[Path] = set()
     for block in project_blocks:
-        match = re.search(r'<img\b[^>]*src="([^"]+)"[^>]*>', block, flags=re.I)
-        if not match:
-            errors.append("homepage project card is missing an image")
-            continue
-        source = Path(urlparse(match.group(1)).path.lstrip("/"))
-        project_sources.add(source)
-        target = ROOT / source
-        dimensions = raster_dimensions(target) if target.is_file() else None
-        if not dimensions or dimensions[0] * 10 != dimensions[1] * 16:
-            errors.append(f"homepage project preview is not 16:10: {source.as_posix()}")
-        if dimensions and dimensions[0] <= dimensions[1]:
-            errors.append(f"homepage project preview uses a portrait-format source: {source.as_posix()}")
+        matches = re.findall(r'<img\b[^>]*src="([^"]+)"[^>]*>', block, flags=re.I)
+        labels = re.findall(r'class="[^"]*mini-collage__label[^"]*"', block, flags=re.I)
+        if len(matches) != 3 or len(labels) != 3 or "mini-collage" not in block:
+            errors.append("homepage project card must use a labelled three-image mini-collage")
+        for raw_source in matches:
+            source = Path(urlparse(raw_source).path.lstrip("/"))
+            project_sources.add(source)
+            target = ROOT / source
+            if not target.is_file() or raster_dimensions(target) is None:
+                errors.append(f"invalid homepage collage image: {source.as_posix()}")
     if project_sources != HOMEPAGE_PREVIEWS:
-        errors.append("homepage project preview set does not match the approved 16:10 assets")
+        errors.append("homepage mini-collage set does not match the optimized project assets")
+    homepage_transfer = sum((ROOT / source).stat().st_size for source in project_sources if (ROOT / source).is_file())
+    homepage_transfer += sum(
+        (ROOT / portrait).stat().st_size
+        for portrait in (
+            Path("assets/images/common/ben-hudson-portrait-520x650.jpg"),
+            Path("assets/images/common/ben-hudson-portrait-696x870.jpg"),
+        )
+        if (ROOT / portrait).is_file()
+    )
+    if homepage_transfer >= 1_500_000:
+        errors.append(f"homepage image transfer exceeds 1.5 MB: {homepage_transfer:,} bytes")
+
+    metric_count = len(re.findall(r'class="metric"', index_html))
+    if metric_count != 4:
+        errors.append(f"homepage must contain four metrics, found {metric_count}")
+    if "tag-list" in index_html:
+        errors.append("homepage project tag list remains")
+    if re.search(r'id="capabilit', index_html, flags=re.I) or "Capabilities" in visible_text(index_html):
+        errors.append("homepage Capabilities section remains")
 
     project_css = re.search(r"\.project-card__visual img\s*\{([^}]*)\}", css, flags=re.I | re.S)
     if not project_css or "object-fit: cover" not in project_css.group(1).lower() or "object-fit: contain" in project_css.group(1).lower():
@@ -429,8 +522,8 @@ def main() -> int:
             errors.append(f"old homepage preview remains referenced: {obsolete}")
 
     expected_portraits = {
-        Path("assets/images/common/ben-hudson-portrait-hero-800.jpg"): (800, 533),
-        Path("assets/images/common/ben-hudson-portrait-hero-1400.jpg"): (1400, 933),
+        Path("assets/images/common/ben-hudson-portrait-520x650.jpg"): (520, 650),
+        Path("assets/images/common/ben-hudson-portrait-696x870.jpg"): (696, 870),
     }
     for relative, expected_dimensions in expected_portraits.items():
         target = ROOT / relative
