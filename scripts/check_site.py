@@ -53,13 +53,15 @@ REQUIRED_EVIDENCE = [
     Path("assets/images/curriculum/evidence/tfac-life-skills-manual-spread.png"),
     Path("assets/images/curriculum/evidence/tfac-equity-handout.png"),
     Path("assets/images/curriculum/evidence/tfac-child-protection-flow-chart.png"),
-    Path("assets/images/curriculum/curriculum-architecture.svg"),
+    Path("assets/images/healthcare/applied-instructional-design-process.svg"),
+    Path("assets/images/curriculum/participatory-learning-methodology.svg"),
     Path("assets/images/curriculum/tfac-eswatini-facilitation-cycle.svg"),
     Path("assets/images/refugee/evidence/refugee-online-learning-overview.png"),
     Path("assets/images/refugee/evidence/refugee-education-scenario.png"),
     Path("assets/images/refugee/evidence/refugee-confidentiality-check.png"),
     Path("assets/images/refugee/evidence/refugee-workshop-structure.png"),
-    Path("assets/images/refugee/evidence/refugee-facilitator-guidance.png"),
+    Path("assets/images/refugee/evidence/refugee-participatory-facilitation-guidance.png"),
+    Path("assets/images/refugee/evidence/refugee-reflective-practice-cycle.png"),
 ]
 PRIVATE_DIRS = {"private", "working", "source-materials", "raw-assets"}
 FORBIDDEN_VISIBLE = ("TODO", "FIXME", "LOREM IPSUM", "PLACEHOLDER")
@@ -75,6 +77,9 @@ OBSOLETE_EVIDENCE_REFERENCES = (
     "adhd-interview-simulation.png",
     "tfac-support-network-handout.png",
     "tfac-eswatini-facilitation.jpg",
+    "learning-system-map.svg",
+    "curriculum-architecture.svg",
+    "refugee-facilitator-guidance.png",
 )
 INTERNAL_PUBLIC_LINKS = (
     "PORTFOLIO_SPEC.md",
@@ -127,7 +132,7 @@ PROHIBITED_CASE_HEADINGS = (
 EXPECTED_WORK_EXAMPLES = {
     Path("work/healthcare-simulation.html"): {"examples": 2, "flipbooks": [4], "singles": 1},
     Path("work/life-skills-curriculum.html"): {"examples": 3, "flipbooks": [3], "singles": 2},
-    Path("work/refugee-sponsorship.html"): {"examples": 2, "flipbooks": [3, 2], "singles": 0},
+    Path("work/refugee-sponsorship.html"): {"examples": 2, "flipbooks": [3, 3], "singles": 0},
 }
 
 

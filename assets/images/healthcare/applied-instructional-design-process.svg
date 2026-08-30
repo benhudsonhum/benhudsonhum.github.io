@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="620" viewBox="0 0 960 620" role="img" aria-labelledby="title desc">
+  <title id="title">Applied instructional-design process for CHEO healthcare-professional learning</title>
+  <desc id="desc">Five connected stages move from inquiry through definition, alignment, design and build. Evaluation and implementation evidence return from build to inquiry for refinement.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="#7fdccb"/></marker>
+    <marker id="return-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="#f2a65a"/></marker>
+    <style>
+      .bg{fill:#151b23}.card{fill:#1b2430;stroke:#2b3644;stroke-width:2}.stage{fill:#7fdccb;font:700 13px system-ui,sans-serif;letter-spacing:1.5px}.num{fill:#f2a65a;font:700 13px system-ui,sans-serif}.head{fill:#f5f2eb;font:700 17px system-ui,sans-serif}.copy{fill:#bac3ce;font:13px system-ui,sans-serif}.title{fill:#f5f2eb;font:700 28px system-ui,sans-serif}.kicker{fill:#7fdccb;font:700 12px system-ui,sans-serif;letter-spacing:2px}.return{fill:#f2a65a;font:700 13px system-ui,sans-serif}.returncopy{fill:#f5d2a7;font:13px system-ui,sans-serif}
+    </style>
+  </defs>
+  <rect class="bg" width="960" height="620" rx="18"/>
+  <text class="kicker" x="48" y="48">CHEO · APPLIED PROCESS</text>
+  <text class="title" x="48" y="82">From clinical purpose to evidence-led refinement</text>
+
+  <path d="M208 270H224M384 270H400M560 270H576M736 270H752" fill="none" stroke="#7fdccb" stroke-width="3" marker-end="url(#arrow)"/>
+
+  <g transform="translate(32 124)">
+    <rect class="card" width="176" height="302" rx="12"/>
+    <text class="num" x="18" y="29">01</text><text class="stage" x="18" y="55">INQUIRE</text>
+    <text class="head" x="18" y="87"><tspan x="18">Understand the</tspan><tspan x="18" dy="21">learning need</tspan></text>
+    <text class="copy" x="18" y="145"><tspan x="18">Clinical and</tspan><tspan x="18" dy="18">educational purpose</tspan><tspan x="18" dy="28">Learners, delivery</tspan><tspan x="18" dy="18">context, constraints</tspan><tspan x="18" dy="28">Existing instruction,</tspan><tspan x="18" dy="18">evidence, requirements</tspan><tspan x="18" dy="28">Preserve what works</tspan></text>
+  </g>
+  <g transform="translate(224 124)">
+    <rect class="card" width="160" height="302" rx="12"/>
+    <text class="num" x="18" y="29">02</text><text class="stage" x="18" y="55">DEFINE</text>
+    <text class="head" x="18" y="87"><tspan x="18">Name the target</tspan><tspan x="18" dy="21">performance</tspan></text>
+    <text class="copy" x="18" y="145"><tspan x="18">Interview performance</tspan><tspan x="18" dy="18">learners must show</tspan><tspan x="18" dy="30">Meaningful learning</tspan><tspan x="18" dy="18">outcomes</tspan><tspan x="18" dy="30">Evaluation questions</tspan><tspan x="18" dy="18">that test the pathway</tspan></text>
+  </g>
+  <g transform="translate(400 124)">
+    <rect class="card" width="160" height="302" rx="12"/>
+    <text class="num" x="18" y="29">03</text><text class="stage" x="18" y="55">ALIGN</text>
+    <text class="head" x="18" y="87"><tspan x="18">Connect learning</tspan><tspan x="18" dy="21">to performance</tspan></text>
+    <text class="copy" x="18" y="145"><tspan x="18">Explanation and</tspan><tspan x="18" dy="18">examples</tspan><tspan x="18" dy="28">Decision practice and</tspan><tspan x="18" dy="18">facilitated simulation</tspan><tspan x="18" dy="28">Feedback, assessment</tspan><tspan x="18" dy="18">and intended interview</tspan><tspan x="18" dy="18">performance</tspan></text>
+  </g>
+  <g transform="translate(576 124)">
+    <rect class="card" width="160" height="302" rx="12"/>
+    <text class="num" x="18" y="29">04</text><text class="stage" x="18" y="55">DESIGN</text>
+    <text class="head" x="18" y="87"><tspan x="18">Shape the</tspan><tspan x="18" dy="21">learning pathway</tspan></text>
+    <text class="copy" x="18" y="145"><tspan x="18">Chaptered explanation</tspan><tspan x="18" dy="18">and learner control</tspan><tspan x="18" dy="28">Branching decisions</tspan><tspan x="18" dy="18">and accessible support</tspan><tspan x="18" dy="28">Instructor-led practice</tspan><tspan x="18" dy="18">where appropriate</tspan></text>
+  </g>
+  <g transform="translate(752 124)">
+    <rect class="card" width="176" height="302" rx="12"/>
+    <text class="num" x="18" y="29">05</text><text class="stage" x="18" y="55">BUILD</text>
+    <text class="head" x="18" y="87"><tspan x="18">Implement, test</tspan><tspan x="18" dy="21">and evaluate</tspan></text>
+    <text class="copy" x="18" y="145"><tspan x="18">Multimedia and</tspan><tspan x="18" dy="18">actor-based simulations</tspan><tspan x="18" dy="28">Brightspace build,</tspan><tspan x="18" dy="18">testing and QA</tspan><tspan x="18" dy="28">Facilitated delivery</tspan><tspan x="18" dy="18">and formal evaluation</tspan></text>
+  </g>
+
+  <path d="M840 440V500H120V442" fill="none" stroke="#f2a65a" stroke-width="3" stroke-dasharray="8 7" marker-end="url(#return-arrow)"/>
+  <rect x="262" y="476" width="436" height="76" rx="10" fill="#231f1a" stroke="#5b4632" stroke-width="2"/>
+  <text class="return" x="480" y="505" text-anchor="middle">EVALUATION + IMPLEMENTATION EVIDENCE</text>
+  <text class="returncopy" x="480" y="531" text-anchor="middle">returns to inquiry, alignment and refinement</text>
+</svg>
