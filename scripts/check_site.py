@@ -37,10 +37,13 @@ REQUIRED_FILES = [
     Path("robots.txt"),
     Path("sitemap.xml"),
     Path("assets/css/site.css"),
+    Path("assets/js/site.js"),
     Path("assets/documents/ben-hudson-instructional-designer-resume.pdf"),
     Path("assets/images/common/social-preview.png"),
-    Path("assets/images/common/ben-hudson-portrait-520x650.jpg"),
-    Path("assets/images/common/ben-hudson-portrait-696x870.jpg"),
+    Path("assets/images/common/ben-hudson-portrait-desktop-520x650.jpg"),
+    Path("assets/images/common/ben-hudson-portrait-desktop-696x870.jpg"),
+    Path("assets/images/common/ben-hudson-portrait-mobile-800x533.jpg"),
+    Path("assets/images/common/ben-hudson-portrait-mobile-1400x933.jpg"),
 ]
 REQUIRED_EVIDENCE = [
     Path("assets/images/healthcare/evidence/adhd-course-overview-safe.png"),
@@ -109,6 +112,23 @@ OBSOLETE_HOMEPAGE_PREVIEWS = {
     "refugee-online-learning-preview.png",
 }
 JUSTIFIED_UNREFERENCED_IMAGES: set[Path] = set()
+OBSOLETE_PORTRAITS = (
+    "ben-hudson-portrait-520x650.jpg",
+    "ben-hudson-portrait-696x870.jpg",
+    "ben-hudson-portrait-hero-800.jpg",
+    "ben-hudson-portrait-hero-1400.jpg",
+)
+PROHIBITED_CASE_HEADINGS = (
+    "The Brief",
+    "What I Designed and Delivered",
+    "What the Work Produced",
+    "What I Learned",
+)
+EXPECTED_WORK_EXAMPLES = {
+    Path("work/healthcare-simulation.html"): {"examples": 2, "flipbooks": [4], "singles": 1},
+    Path("work/life-skills-curriculum.html"): {"examples": 3, "flipbooks": [3], "singles": 2},
+    Path("work/refugee-sponsorship.html"): {"examples": 2, "flipbooks": [3, 2], "singles": 0},
+}
 
 
 class PageParser(HTMLParser):
@@ -324,75 +344,165 @@ def main() -> int:
             match = re.search(r'<img\b[^>]*src="([^"]*/evidence/[^"]+)"', block, flags=re.I)
             if match and not re.search(r'<a\b[^>]*class="[^"]*artifact-fullsize[^"]*"', block, flags=re.I):
                 errors.append(f"detailed evidence missing full-size link in {relative.as_posix()}: {match.group(1)}")
+        bootstrap_position = html.find('class="theme-bootstrap"')
+        stylesheet_position = html.find('href="/assets/css/site.css"')
+        if (
+            bootstrap_position < 0
+            or stylesheet_position < 0
+            or bootstrap_position > stylesheet_position
+            or "document.documentElement.dataset.theme" not in html
+        ):
+            errors.append(f"theme bootstrap is missing or follows the stylesheet: {relative.as_posix()}")
+        if len(re.findall(r'<button\b[^>]*data-theme-toggle', html, flags=re.I)) != 1:
+            errors.append(f"expected one theme toggle: {relative.as_posix()}")
+        if not re.search(r'<script\b[^>]*src="/assets/js/site\.js"[^>]*\bdefer\b', html, flags=re.I):
+            errors.append(f"shared site JavaScript is not loaded with defer: {relative.as_posix()}")
+
         if relative.parent == Path("work"):
-            story_openings = re.findall(
-                r'<div\b[^>]*class="[^"]*\bvisual-story\b[^"]*"[^>]*>',
-                html,
-                flags=re.I,
-            )
-            if len(story_openings) != 1:
-                errors.append(
-                    f"expected one visual-story component, found {len(story_openings)}: {relative.as_posix()}"
-                )
-            story_figures = re.findall(
-                r'<figure\b[^>]*class="[^"]*visual-story__item[^"]*"[^>]*>.*?</figure>',
+            expected = EXPECTED_WORK_EXAMPLES[relative]
+            if 'data-role-summary' not in html or 'class="role-summary"' not in html:
+                errors.append(f"role summary is missing: {relative.as_posix()}")
+            case_visible = " ".join(visible_text(html).split())
+            for heading in PROHIBITED_CASE_HEADINGS:
+                if heading.casefold() in case_visible.casefold():
+                    errors.append(f"prohibited generic heading remains ({heading}): {relative.as_posix()}")
+            if "case-toc" in html:
+                errors.append(f"case-study table of contents remains: {relative.as_posix()}")
+            if "About the evidence" in case_visible:
+                errors.append(f"public About the evidence copy remains: {relative.as_posix()}")
+
+            example_blocks = re.findall(
+                r'<article\b[^>]*class="[^"]*\bwork-example\b[^"]*"[^>]*>.*?</article>',
                 html,
                 flags=re.I | re.S,
             )
-            if len(story_figures) != 5:
+            if len(example_blocks) != expected["examples"]:
                 errors.append(
-                    f"expected five visual-story figures, found {len(story_figures)}: {relative.as_posix()}"
+                    f"expected {expected['examples']} work examples, found {len(example_blocks)}: {relative.as_posix()}"
                 )
-            captions: list[str] = []
-            for position, block in enumerate(story_figures, start=1):
-                image_match = re.search(r'<img\b([^>]*)>', block, flags=re.I | re.S)
+            flipbook_blocks = [block for block in example_blocks if "work-example--flipbook" in block]
+            single_blocks = [block for block in example_blocks if "work-example--single" in block]
+            if len(flipbook_blocks) != len(expected["flipbooks"]):
+                errors.append(f"unexpected flipbook count: {relative.as_posix()}")
+            if len(single_blocks) != expected["singles"]:
+                errors.append(f"unexpected single-artefact count: {relative.as_posix()}")
+
+            all_caption_texts: list[str] = []
+            for book_position, (block, expected_slides) in enumerate(
+                zip(flipbook_blocks, expected["flipbooks"]), start=1
+            ):
+                slides = re.findall(
+                    r'<figure\b[^>]*class="[^"]*flipbook__slide[^"]*"[^>]*>.*?</figure>',
+                    block,
+                    flags=re.I | re.S,
+                )
+                if len(slides) != expected_slides:
+                    errors.append(
+                        f"flipbook {book_position} expected {expected_slides} slides, found {len(slides)}: {relative.as_posix()}"
+                    )
+                for control in ("data-flipbook-previous", "data-flipbook-next", "data-flipbook-status"):
+                    if block.count(control) != 1:
+                        errors.append(
+                            f"flipbook {book_position} missing unique {control}: {relative.as_posix()}"
+                        )
+                for slide_position, figure in enumerate(slides, start=1):
+                    image_match = re.search(r'<img\b([^>]*)>', figure, flags=re.I | re.S)
+                    if not image_match:
+                        errors.append(
+                            f"flipbook {book_position} slide {slide_position} has no image: {relative.as_posix()}"
+                        )
+                    else:
+                        image_tag = image_match.group(1)
+                        for attribute in ("src", "alt", "width", "height"):
+                            match = re.search(rf'\b{attribute}="([^"]*)"', image_tag, flags=re.I)
+                            if not match or not match.group(1).strip():
+                                errors.append(
+                                    f"flipbook {book_position} slide {slide_position} image missing {attribute}: {relative.as_posix()}"
+                                )
+                    caption_match = re.search(
+                        r'<figcaption\b[^>]*>(.*?)</figcaption>', figure, flags=re.I | re.S
+                    )
+                    if not caption_match:
+                        errors.append(
+                            f"flipbook {book_position} slide {slide_position} has no caption: {relative.as_posix()}"
+                        )
+                        continue
+                    caption_html = caption_match.group(1)
+                    caption_text = " ".join(visible_text(caption_html).split()).casefold()
+                    all_caption_texts.append(caption_text)
+                    if not all(
+                        token in caption_html
+                        for token in ("artifact-label", "<strong", "artifact-fullsize")
+                    ):
+                        errors.append(
+                            f"flipbook {book_position} slide {slide_position} lacks label, title or full-size link: {relative.as_posix()}"
+                        )
+                    explanation_match = re.search(
+                        r'</strong>\s*<span>(.*?)</span>', caption_html, flags=re.I | re.S
+                    )
+                    explanation = (
+                        " ".join(visible_text(explanation_match.group(1)).split())
+                        if explanation_match
+                        else ""
+                    )
+                    explanation_words = re.findall(r"[\w’'-]+", explanation, flags=re.UNICODE)
+                    if not 18 <= len(explanation_words) <= 35:
+                        errors.append(
+                            f"flipbook {book_position} slide {slide_position} explanation is not 18-35 words ({len(explanation_words)}): {relative.as_posix()}"
+                        )
+
+            for single_position, block in enumerate(single_blocks, start=1):
+                figures = re.findall(
+                    r'<figure\b[^>]*class="[^"]*work-example__figure[^"]*"[^>]*>.*?</figure>',
+                    block,
+                    flags=re.I | re.S,
+                )
+                if len(figures) != 1:
+                    errors.append(
+                        f"single example {single_position} must contain one figure: {relative.as_posix()}"
+                    )
+                    continue
+                figure = figures[0]
+                image_match = re.search(r'<img\b([^>]*)>', figure, flags=re.I | re.S)
                 if not image_match:
-                    errors.append(f"visual-story figure {position} has no image: {relative.as_posix()}")
+                    errors.append(f"single example {single_position} has no image: {relative.as_posix()}")
                 else:
-                    image_tag = image_match.group(1)
                     for attribute in ("src", "alt", "width", "height"):
-                        match = re.search(rf'\b{attribute}="([^"]*)"', image_tag, flags=re.I)
+                        match = re.search(rf'\b{attribute}="([^"]*)"', image_match.group(1), flags=re.I)
                         if not match or not match.group(1).strip():
                             errors.append(
-                                f"visual-story figure {position} image missing {attribute}: {relative.as_posix()}"
+                                f"single example {single_position} image missing {attribute}: {relative.as_posix()}"
                             )
-                caption_match = re.search(r'<figcaption\b[^>]*>(.*?)</figcaption>', block, flags=re.I | re.S)
+                caption_match = re.search(
+                    r'<figcaption\b[^>]*>(.*?)</figcaption>', figure, flags=re.I | re.S
+                )
                 if not caption_match:
-                    errors.append(f"visual-story figure {position} has no caption: {relative.as_posix()}")
-                    continue
-                caption_html = caption_match.group(1)
-                caption_text = " ".join(visible_text(caption_html).split()).casefold()
-                captions.append(caption_text)
-                if not all(token in caption_html for token in ("artifact-label", "<strong", "artifact-fullsize")):
-                    errors.append(
-                        f"visual-story figure {position} lacks label, title or full-size link: {relative.as_posix()}"
-                    )
-                explanation_match = re.search(
-                    r'</strong>\s*<span>(.*?)</span>', caption_html, flags=re.I | re.S
-                )
-                explanation = (
-                    " ".join(visible_text(explanation_match.group(1)).split())
-                    if explanation_match
-                    else ""
-                )
-                explanation_words = re.findall(r"[\w’'-]+", explanation, flags=re.UNICODE)
-                if not 18 <= len(explanation_words) <= 35:
-                    errors.append(
-                        f"visual-story figure {position} explanation is not 18-35 words ({len(explanation_words)}): {relative.as_posix()}"
-                    )
-                if image_match:
-                    alt_match = re.search(r'\balt="([^"]*)"', image_match.group(1), flags=re.I)
-                    alt_text = " ".join((alt_match.group(1) if alt_match else "").split()).casefold()
-                    if alt_text and alt_text == explanation.casefold():
+                    errors.append(f"single example {single_position} has no caption: {relative.as_posix()}")
+                else:
+                    caption_html = caption_match.group(1)
+                    all_caption_texts.append(" ".join(visible_text(caption_html).split()).casefold())
+                    if not all(
+                        token in caption_html
+                        for token in ("artifact-label", "<strong", "artifact-fullsize")
+                    ):
                         errors.append(
-                            f"visual-story figure {position} alt duplicates its caption: {relative.as_posix()}"
+                            f"single example {single_position} lacks label, title or full-size link: {relative.as_posix()}"
                         )
-            if len(captions) != len(set(captions)):
-                errors.append(f"visual-story captions are not unique: {relative.as_posix()}")
-            if "case-toc" in html:
-                errors.append(f"case-study table of contents remains: {relative.as_posix()}")
-            if "About the evidence" in visible_text(html):
-                errors.append(f"public About the evidence copy remains: {relative.as_posix()}")
+                    explanation_match = re.search(
+                        r'</strong>\s*<span>(.*?)</span>', caption_html, flags=re.I | re.S
+                    )
+                    explanation = (
+                        " ".join(visible_text(explanation_match.group(1)).split())
+                        if explanation_match
+                        else ""
+                    )
+                    explanation_words = re.findall(r"[\w’'-]+", explanation, flags=re.UNICODE)
+                    if not 18 <= len(explanation_words) <= 35:
+                        errors.append(
+                            f"single example {single_position} explanation is not 18-35 words ({len(explanation_words)}): {relative.as_posix()}"
+                        )
+            if len(all_caption_texts) != len(set(all_caption_texts)):
+                errors.append(f"work-example captions are not unique: {relative.as_posix()}")
         upper_visible = visible_text(html).upper()
         for marker in FORBIDDEN_VISIBLE:
             if marker in upper_visible:
@@ -404,6 +514,9 @@ def main() -> int:
         for obsolete in OBSOLETE_EVIDENCE_REFERENCES:
             if obsolete.casefold() in html.casefold():
                 errors.append(f"obsolete evidence reference {obsolete}: {relative.as_posix()}")
+        for obsolete in OBSOLETE_PORTRAITS:
+            if obsolete.casefold() in html.casefold():
+                errors.append(f"obsolete portrait reference {obsolete}: {relative.as_posix()}")
         for internal in INTERNAL_PUBLIC_LINKS:
             if internal.casefold() in html.casefold():
                 errors.append(f"internal file linked from public HTML {internal}: {relative.as_posix()}")
@@ -454,8 +567,18 @@ def main() -> int:
     if not hero:
         errors.append("homepage hero section not found")
     else:
-        if "<picture" not in hero or "ben-hudson-portrait-520x650.jpg" not in hero or "ben-hudson-portrait-696x870.jpg" not in hero:
-            errors.append("homepage hero does not use both portrait derivatives in a picture element")
+        portrait_names = (
+            "ben-hudson-portrait-desktop-520x650.jpg",
+            "ben-hudson-portrait-desktop-696x870.jpg",
+            "ben-hudson-portrait-mobile-800x533.jpg",
+            "ben-hudson-portrait-mobile-1400x933.jpg",
+        )
+        if "<picture" not in hero or any(name not in hero for name in portrait_names):
+            errors.append("homepage hero does not use all four responsive portrait derivatives")
+        if not re.search(r'<source\b[^>]*media="\(min-width: 72rem\)"[^>]*portrait-desktop', hero, flags=re.I):
+            errors.append("homepage portrait lacks the desktop 4:5 art-direction source")
+        if not re.search(r'<img\b[^>]*portrait-mobile[^>]*width="800"[^>]*height="533"', hero, flags=re.I):
+            errors.append("homepage portrait lacks the mobile 3:2 fallback and intrinsic dimensions")
         if "system-map.svg" in hero:
             errors.append("system map remains in the homepage hero")
         if 'fetchpriority="high"' not in hero or 'decoding="async"' not in hero:
@@ -494,8 +617,10 @@ def main() -> int:
     homepage_transfer += sum(
         (ROOT / portrait).stat().st_size
         for portrait in (
-            Path("assets/images/common/ben-hudson-portrait-520x650.jpg"),
-            Path("assets/images/common/ben-hudson-portrait-696x870.jpg"),
+            Path("assets/images/common/ben-hudson-portrait-desktop-520x650.jpg"),
+            Path("assets/images/common/ben-hudson-portrait-desktop-696x870.jpg"),
+            Path("assets/images/common/ben-hudson-portrait-mobile-800x533.jpg"),
+            Path("assets/images/common/ben-hudson-portrait-mobile-1400x933.jpg"),
         )
         if (ROOT / portrait).is_file()
     )
@@ -522,8 +647,10 @@ def main() -> int:
             errors.append(f"old homepage preview remains referenced: {obsolete}")
 
     expected_portraits = {
-        Path("assets/images/common/ben-hudson-portrait-520x650.jpg"): (520, 650),
-        Path("assets/images/common/ben-hudson-portrait-696x870.jpg"): (696, 870),
+        Path("assets/images/common/ben-hudson-portrait-desktop-520x650.jpg"): (520, 650),
+        Path("assets/images/common/ben-hudson-portrait-desktop-696x870.jpg"): (696, 870),
+        Path("assets/images/common/ben-hudson-portrait-mobile-800x533.jpg"): (800, 533),
+        Path("assets/images/common/ben-hudson-portrait-mobile-1400x933.jpg"): (1400, 933),
     }
     for relative, expected_dimensions in expected_portraits.items():
         target = ROOT / relative
