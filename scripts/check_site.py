@@ -67,9 +67,9 @@ REQUIRED_EVIDENCE = [
     Path("assets/images/refugee/evidence/refugee-education-scenario-framed.png"),
     Path("assets/images/refugee/evidence/refugee-confidentiality-check.png"),
     Path("assets/images/refugee/evidence/refugee-confidentiality-check-framed.png"),
-    Path("assets/images/refugee/evidence/refugee-workshop-structure.png"),
-    Path("assets/images/refugee/evidence/refugee-participatory-facilitation-guidance.png"),
-    Path("assets/images/refugee/evidence/refugee-reflective-practice-cycle.png"),
+    Path("assets/images/refugee/evidence/refugee-workshop-outcomes-doing-with.png"),
+    Path("assets/images/refugee/evidence/refugee-workshop-training-principles.png"),
+    Path("assets/images/refugee/evidence/refugee-workshop-reflective-practice.png"),
 ]
 PRIVATE_DIRS = {"private", "working", "source-materials", "raw-assets"}
 FORBIDDEN_VISIBLE = ("TODO", "FIXME", "LOREM IPSUM", "PLACEHOLDER")
