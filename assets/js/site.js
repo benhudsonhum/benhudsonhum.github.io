@@ -86,6 +86,10 @@
     previous.addEventListener("click", () => showSlide(current - 1));
     next.addEventListener("click", () => showSlide(current + 1));
     flipbook.addEventListener("keydown", (event) => {
+      const interactive = event.target instanceof Element
+        ? event.target.closest('video, audio, button, a, input, select, textarea, [contenteditable], [role="slider"]')
+        : null;
+      if (interactive) return;
       if (event.key === "ArrowLeft") {
         event.preventDefault();
         showSlide(current - 1);
@@ -102,5 +106,20 @@
     });
 
     showSlide(0);
+  });
+
+  const portfolioMedia = Array.from(document.querySelectorAll("video, audio"));
+  portfolioMedia.forEach((media) => {
+    media.addEventListener("play", () => {
+      portfolioMedia.forEach((other) => {
+        if (other !== media && !other.paused) other.pause();
+      });
+    });
+  });
+
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+      portfolioMedia.forEach((media) => media.pause());
+    }
   });
 })();

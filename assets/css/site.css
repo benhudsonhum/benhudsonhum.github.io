@@ -190,7 +190,7 @@ li + li { margin-top: 0.45rem; }
 .button--secondary:hover { border-color: var(--color-accent); color: var(--color-link); }
 .text-link { display: inline-flex; align-items: center; gap: 0.4rem; font-weight: 800; }
 
-/* 7. Homepage hero and metrics */
+/* 7. Homepage hero and practice summary */
 .hero { padding-block: var(--space-6); }
 .hero__grid { display: grid; gap: var(--space-5); align-items: center; }
 .hero__content { display: grid; gap: var(--space-3); }
@@ -201,10 +201,10 @@ li + li { margin-top: 0.45rem; }
 .hero__visual { overflow: hidden; border: var(--border); border-radius: var(--radius-lg); background: var(--color-surface); box-shadow: var(--shadow); }
 .hero__visual picture, .hero__visual img { display: block; width: 100%; }
 .hero__visual img { aspect-ratio: 3 / 2; object-fit: cover; object-position: center 42%; }
-.metric-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: var(--border); border-left: var(--border); }
-.metric { min-height: 8.5rem; padding: var(--space-3); border-right: var(--border); border-bottom: var(--border); }
-.metric dt { color: var(--color-accent-warm); font-size: var(--text-xl); font-weight: 800; line-height: 1.1; }
-.metric dd { margin: 0.65rem 0 0; color: var(--color-text-muted); font-size: var(--text-sm); line-height: 1.45; }
+.practice-summary-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: var(--border); border-left: var(--border); }
+.practice-summary-item { min-height: 8.5rem; padding: var(--space-3); border-right: var(--border); border-bottom: var(--border); }
+.practice-summary-item dt { overflow-wrap: anywhere; color: var(--color-accent-warm); font-size: var(--text-xl); font-weight: 800; line-height: 1.1; }
+.practice-summary-item dd { margin: 0.65rem 0 0; color: var(--color-text-muted); font-size: var(--text-sm); line-height: 1.45; }
 
 /* 8. Project cards */
 .project-grid { display: grid; gap: var(--space-3); }
@@ -226,13 +226,10 @@ li + li { margin-top: 0.45rem; }
 .tag-list li { margin: 0; }
 .tag { display: inline-block; padding: 0.35rem 0.6rem; border: var(--border); border-radius: 999px; color: var(--color-text-muted); font-size: 0.875rem; line-height: 1.2; }
 
-/* 9. Process and capability sections */
-.approach-visual { overflow: hidden; max-width: var(--wide-reading); margin-bottom: var(--space-5); border: var(--border); border-radius: var(--radius-md); background: var(--color-surface); }
-.approach-visual img { width: 100%; height: auto; }
-.process-grid, .capability-grid { display: grid; gap: var(--space-3); }
-.process-step, .capability-card { padding: var(--space-3); border-top: 2px solid var(--color-border); }
-.process-step__number { display: block; margin-bottom: var(--space-2); color: var(--color-accent-warm); font-family: var(--font-editorial); font-size: var(--text-xl); }
-.process-step p, .capability-card li { color: var(--color-text-muted); }
+/* 9. Capability sections */
+.capability-grid { display: grid; gap: var(--space-3); }
+.capability-card { padding: var(--space-3); border-top: 2px solid var(--color-border); }
+.capability-card li { color: var(--color-text-muted); }
 .capability-card ul { margin: var(--space-2) 0 0; }
 .contact-panel { display: grid; gap: var(--space-3); padding: var(--space-4); border: var(--border); border-radius: var(--radius-lg); background: var(--color-surface); }
 .contact-panel p { max-width: 68ch; color: var(--color-text-muted); }
@@ -312,11 +309,10 @@ li + li { margin-top: 0.45rem; }
 @media (min-width: 48rem) {
   .container { width: min(100% - 3rem, var(--container)); }
   .hero, .section { padding-block: var(--space-7); }
-  .metric-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .practice-summary-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .project-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .project-card--featured { grid-column: 1 / -1; grid-template-columns: minmax(0, 1.25fr) minmax(18rem, 0.75fr); }
   .project-card--featured .project-card__visual { border-right: var(--border); border-bottom: 0; }
-  .process-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .capability-grid, .principle-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .project-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .project-facts > div { padding-right: var(--space-3); }
@@ -329,7 +325,6 @@ li + li { margin-top: 0.45rem; }
   .site-footer__grid { grid-template-columns: 1fr auto; align-items: end; }
 }
 @media (min-width: 64rem) {
-  .process-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .capability-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .principle-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .project-facts { grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -368,7 +363,7 @@ li + li { margin-top: 0.45rem; }
   border-radius: 5px;
 }
 .hero__visual img { width: 100%; aspect-ratio: 3 / 2; object-fit: cover; object-position: center 42%; }
-.metric-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.practice-summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 
 .mini-collage {
   display: grid;
@@ -495,11 +490,34 @@ li + li { margin-top: 0.45rem; }
 .flipbook__status { min-width: 4rem; color: var(--color-text-muted); font-variant-numeric: tabular-nums; text-align: center; }
 .work-example__figure { overflow: hidden; max-width: var(--wide-reading); border: var(--border); border-radius: 5px; background: var(--color-surface); }
 
+.evidence-collage, .media-grid, .storyboard-grid { display: grid; gap: var(--space-3); max-width: var(--wide-reading); }
+.evidence-panel, .media-card, .storyboard-step { min-width: 0; overflow: hidden; border: var(--border); border-radius: 5px; background: var(--color-surface); }
+.evidence-panel > a, .storyboard-step > a { display: block; }
+.evidence-panel img, .storyboard-step img, .media-card video { display: block; width: 100%; height: auto; background: var(--color-surface-2); }
+.evidence-panel .artifact-caption, .storyboard-step figcaption { display: grid; gap: 0.35rem; }
+.evidence-panel .artifact-label { margin: 0; }
+.media-card video { aspect-ratio: 16 / 9; }
+.media-card__body { display: grid; gap: var(--space-2); padding: var(--space-3); }
+.media-card__body p { color: var(--color-text-muted); }
+.media-transcript { color: var(--color-text-muted); font-size: var(--text-sm); }
+.media-transcript summary { color: var(--color-link); font-weight: 800; cursor: pointer; }
+.media-transcript p { margin-top: var(--space-1); }
+.storyboard-grid { margin-top: var(--space-4); }
+.storyboard-step__label { display: block; color: var(--color-accent-warm); font-size: var(--text-sm); font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; }
+.storyboard-step figcaption { padding: var(--space-2); color: var(--color-text-muted); font-size: var(--text-sm); }
+.storyboard-step figcaption strong { color: var(--color-text); }
+.evidence-note { max-width: var(--wide-reading); margin-top: var(--space-2); color: var(--color-text-faint); font-size: var(--text-sm); }
+
 @media (min-width: 48rem) {
-  .metric-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .practice-summary-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .role-responsibilities { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .work-example { grid-template-columns: minmax(4rem, 0.12fr) minmax(0, 1fr); gap: var(--space-4); }
   .work-example__number { padding-top: 0.25rem; }
+  .evidence-collage--two, .evidence-collage--three { grid-template-columns: minmax(0, 1.45fr) minmax(0, 0.9fr); }
+  .evidence-collage--three .evidence-collage__lead { grid-row: 1 / span 2; }
+  .evidence-collage--four { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .media-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .storyboard-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 @media (min-width: 72rem) {
@@ -507,6 +525,7 @@ li + li { margin-top: 0.45rem; }
   .hero h1 { max-width: 14ch; font-size: min(var(--text-hero), 4.6rem); }
   .hero__visual { width: min(100%, 27rem); margin-inline: 0; justify-self: end; }
   .hero__visual img { aspect-ratio: 4 / 5; object-position: center; }
+  .storyboard-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 
 @media (max-width: 24rem) {
