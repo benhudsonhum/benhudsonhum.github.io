@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="660" viewBox="0 0 960 660" role="img" aria-labelledby="title desc">
+  <title id="title">Theatre for a Change participatory learning methodology</title>
+  <desc id="desc">An adaptable eight-part pattern connects knowledge, attitude and skill outcomes with participants' experience, visible exploration, observation, reflection, rehearsal, application and evidence-led adaptation. Sculpting, Mapping and Touch Tag are examples of selectable methods rather than fixed stages.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="#7fdccb"/></marker>
+    <style>
+      .bg{fill:#151b23}.card{fill:#1b2430;stroke:#2b3644;stroke-width:2}.num{fill:#f2a65a;font:700 13px system-ui,sans-serif}.head{fill:#f5f2eb;font:700 16px system-ui,sans-serif}.copy{fill:#bac3ce;font:13px system-ui,sans-serif}.title{fill:#f5f2eb;font:700 27px system-ui,sans-serif}.kicker{fill:#7fdccb;font:700 12px system-ui,sans-serif;letter-spacing:2px}.callhead{fill:#7fdccb;font:700 13px system-ui,sans-serif;letter-spacing:1px}.callcopy{fill:#f5f2eb;font:14px system-ui,sans-serif}.intent{fill:#f5d2a7;font:700 14px system-ui,sans-serif}
+    </style>
+  </defs>
+  <rect class="bg" width="960" height="660" rx="18"/>
+  <text class="kicker" x="40" y="43">THEATRE FOR A CHANGE · CODIFIED PARTICIPATORY PATTERN</text>
+  <text class="title" x="40" y="76">Participation connected to intended learning</text>
+
+  <path d="M240 180H266M470 180H496M700 180H726M830 256V298M720 385H704M490 385H474M260 385H244" fill="none" stroke="#7fdccb" stroke-width="3" marker-end="url(#arrow)"/>
+
+  <g transform="translate(40 102)"><rect class="card" width="200" height="154" rx="12"/><text class="num" x="16" y="27">01</text><text class="head" x="16" y="56"><tspan x="16">Define knowledge,</tspan><tspan x="16" dy="20">attitude + skill outcomes</tspan></text><text class="copy" x="16" y="112"><tspan x="16">Start with intended learning</tspan><tspan x="16" dy="18">and behaviour in practice.</tspan></text></g>
+  <g transform="translate(270 102)"><rect class="card" width="200" height="154" rx="12"/><text class="num" x="16" y="27">02</text><text class="head" x="16" y="56"><tspan x="16">Surface experience,</tspan><tspan x="16" dy="20">assumptions + knowledge</tspan></text><text class="copy" x="16" y="112"><tspan x="16">Invite inquiry before adding</tspan><tspan x="16" dy="18">new explanation.</tspan></text></g>
+  <g transform="translate(500 102)"><rect class="card" width="200" height="154" rx="12"/><text class="num" x="16" y="27">03</text><text class="head" x="16" y="56"><tspan x="16">Make thinking +</tspan><tspan x="16" dy="20">relationships visible</tspan></text><text class="copy" x="16" y="112"><tspan x="16">Use participatory methods</tspan><tspan x="16" dy="18">to externalize experience.</tspan></text></g>
+  <g transform="translate(730 102)"><rect class="card" width="190" height="154" rx="12"/><text class="num" x="16" y="27">04</text><text class="head" x="16" y="56"><tspan x="16">Explore through body,</tspan><tspan x="16" dy="20">space + scenario</tspan></text><text class="copy" x="16" y="112"><tspan x="16">Examine relationships and</tspan><tspan x="16" dy="18">choices from new angles.</tspan></text></g>
+
+  <g transform="translate(730 308)"><rect class="card" width="190" height="154" rx="12"/><text class="num" x="16" y="27">05</text><text class="head" x="16" y="56"><tspan x="16">Observe closely +</tspan><tspan x="16" dy="20">facilitate reflection</tspan></text><text class="copy" x="16" y="112"><tspan x="16">Use open questions to draw</tspan><tspan x="16" dy="18">out meaning and evidence.</tspan></text></g>
+  <g transform="translate(500 308)"><rect class="card" width="200" height="154" rx="12"/><text class="num" x="16" y="27">06</text><text class="head" x="16" y="56"><tspan x="16">Rehearse alternative</tspan><tspan x="16" dy="20">behaviours + strategies</tspan></text><text class="copy" x="16" y="112"><tspan x="16">Test possible actions in a</tspan><tspan x="16" dy="18">supported setting.</tspan></text></g>
+  <g transform="translate(270 308)"><rect class="card" width="200" height="154" rx="12"/><text class="num" x="16" y="27">07</text><text class="head" x="16" y="56"><tspan x="16">Apply learning to</tspan><tspan x="16" dy="20">realistic situations</tspan></text><text class="copy" x="16" y="112"><tspan x="16">Connect practice to personal</tspan><tspan x="16" dy="18">and social contexts.</tspan></text></g>
+  <g transform="translate(40 308)"><rect class="card" width="200" height="154" rx="12"/><text class="num" x="16" y="27">08</text><text class="head" x="16" y="56"><tspan x="16">Gather evidence +</tspan><tspan x="16" dy="20">adapt delivery</tspan></text><text class="copy" x="16" y="112"><tspan x="16">Revise activities, guidance</tspan><tspan x="16" dy="18">or sequencing.</tspan></text></g>
+
+  <path d="M140 468V495H50" fill="none" stroke="#f2a65a" stroke-width="3" stroke-dasharray="7 6"/>
+  <rect x="40" y="494" width="880" height="126" rx="12" fill="#1b2430" stroke="#5b4632" stroke-width="2"/>
+  <text class="callhead" x="64" y="524">SELECTABLE METHODS · NOT MANDATORY STAGES</text>
+  <text class="callcopy" x="64" y="552">Sculpting · Mapping · Touch Tag</text>
+  <text class="callcopy" x="64" y="579">Choose embodied, spatial or scenario-based methods because they serve the outcomes and context.</text>
+  <text class="intent" x="64" y="605">Participation connects observation, reflection, rehearsal and application—it is not activity for its own sake.</text>
+</svg>

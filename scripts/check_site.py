@@ -54,6 +54,9 @@ REQUIRED_EVIDENCE = [
     Path("assets/video/healthcare/adhd-systematic-reporter-bias-highlight.mp4"),
     Path("assets/video/healthcare/adhd-systematic-reporter-bias-highlight.webm"),
     Path("assets/images/curriculum/evidence/tfac-life-skills-manual-spread.png"),
+    *[Path(f"assets/images/curriculum/manual/life-skills-pages-{pages}.png") for pages in (
+        "002-003", "042-043", "047-048", "052-053", "059-060",
+    )],
     Path("assets/images/curriculum/evidence/tfac-equity-handout.png"),
     Path("assets/images/curriculum/evidence/tfac-child-protection-flow-chart.png"),
     Path("assets/images/curriculum/evidence/tfac-child-protection-network-display.png"),
@@ -66,6 +69,7 @@ REQUIRED_EVIDENCE = [
     Path("assets/images/curriculum/evidence/tfac-eswatini-facilitation-public.jpg"),
     Path("assets/images/curriculum/evidence/tfac-observation-assessment.jpg"),
     Path("assets/images/curriculum/tfac-eswatini-facilitation-cycle.svg"),
+    Path("assets/images/curriculum/participatory-learning-methodology.svg"),
     Path("assets/images/refugee/evidence/refugee-online-resource-overview.png"),
     Path("assets/images/refugee/evidence/refugee-learning-identity-safe.png"),
     Path("assets/images/refugee/evidence/refugee-sponsorship-agreement-check.png"),
@@ -74,6 +78,10 @@ REQUIRED_EVIDENCE = [
     Path("assets/images/refugee/evidence/refugee-workshop-outcomes-doing-with.png"),
     Path("assets/images/refugee/evidence/refugee-workshop-training-principles.png"),
     Path("assets/images/refugee/evidence/refugee-workshop-reflective-practice.png"),
+    *[Path(f"assets/images/refugee/manual/sponsorship-manual-page-{name}.png") for name in (
+        "09-outcomes-structure", "14-workshop-notes", "15-roles-practice",
+        "16-organization-communication", "17-communication-scenario", "28-facilitator-reflection",
+    )],
 ]
 HOMEPAGE_PREVIEWS = {
     Path("assets/images/home/healthcare-interactive-video.jpg"),
@@ -87,7 +95,7 @@ HOMEPAGE_PREVIEWS = {
     Path("assets/images/home/refugee-sponsor-workshops.jpg"),
 }
 OBSOLETE_PATHS = (
-    "system-map.svg", "participatory-learning-methodology.svg", "healthcare-course-overview.jpg",
+    "system-map.svg", "healthcare-course-overview.jpg",
     "healthcare-searchable-video.jpg", "healthcare-interactive-reference.jpg", "curriculum-facilitation-circle.jpg",
     "curriculum-90-activity-manual.jpg", "curriculum-visual-learning-resource.jpg", "refugee-online-pathway.jpg",
     "refugee-workshop-design.jpg", "adhd-course-overview-safe.png", "adhd-course-overview-framed.png",
@@ -96,13 +104,14 @@ OBSOLETE_PATHS = (
     "refugee-education-scenario.png", "refugee-education-scenario-framed.png", "refugee-confidentiality-check.png",
     "refugee-confidentiality-check-framed.png",
 )
-FORBIDDEN_SUFFIXES = {".rar", ".zip", ".7z", ".docx", ".pptx", ".psd", ".exe"}
+FORBIDDEN_SUFFIXES = {".rar", ".zip", ".7z", ".ppt", ".pptx", ".doc", ".docx", ".psd", ".exe"}
 FORBIDDEN_TEXT = ("C:\\Users\\", "C:/Users/", "BEGIN PRIVATE KEY", "password=", "api_key=")
 NEW_RASTERS = {path for path in [*REQUIRED_EVIDENCE, *HOMEPAGE_PREVIEWS] if path.suffix.lower() in {".png", ".jpg", ".jpeg"}}
 PAGE_WORD_TARGETS = {
-    Path("work/healthcare-simulation.html"): (600, 725),
-    Path("work/life-skills-curriculum.html"): (725, 875),
-    Path("work/refugee-sponsorship.html"): (600, 725),
+    Path("index.html"): (0, 300),
+    Path("work/healthcare-simulation.html"): (350, 500),
+    Path("work/life-skills-curriculum.html"): (450, 625),
+    Path("work/refugee-sponsorship.html"): (350, 525),
 }
 
 
@@ -247,8 +256,19 @@ def main() -> int:
     homepage_bytes = sum((ROOT / item).stat().st_size for item in HOMEPAGE_PREVIEWS if (ROOT / item).is_file())
     if homepage_bytes >= 1_500_000: errors.append(f"homepage preview transfer exceeds 1.5 MB: {homepage_bytes:,} bytes")
 
+    exact_home_strings = (
+        "I turn complex expertise into practical, performance-based learning.",
+        "ADHD diagnostic-interview training",
+        "Participatory curricula and facilitator training",
+        "Training for refugee sponsorship groups",
+    )
+    for required in exact_home_strings:
+        if required not in index: errors.append(f"missing exact homepage text: {required}")
+    if "professional audiences" in index.casefold(): errors.append("homepage proposition still contains professional audiences")
+    if re.search(r"artifact-fullsize|View full-size", "\n".join(html_source.values()), flags=re.I): errors.append("visible View full-size link or obsolete artifact-fullsize markup remains")
+
     role_expectations = {
-        Path("work/healthcare-simulation.html"): (3, 0), Path("work/life-skills-curriculum.html"): (4, 1), Path("work/refugee-sponsorship.html"): (3, 1),
+        Path("work/healthcare-simulation.html"): (3, 1), Path("work/life-skills-curriculum.html"): (3, 3), Path("work/refugee-sponsorship.html"): (3, 1),
     }
     for relative, (example_count, flipbook_count) in role_expectations.items():
         html = html_source.get(relative, "")
@@ -256,14 +276,26 @@ def main() -> int:
         actual_flipbooks = len(re.findall(r'\bdata-flipbook(?:\s|=)', html, flags=re.I))
         if actual_examples != example_count: errors.append(f"{relative.as_posix()} has {actual_examples}/{example_count} work examples")
         if actual_flipbooks != flipbook_count: errors.append(f"{relative.as_posix()} has {actual_flipbooks}/{flipbook_count} flipbooks")
-    if sum(len(re.findall(r'\bdata-flipbook(?:\s|=)', html, flags=re.I)) for html in html_source.values()) != 2: errors.append("site must contain exactly two flipbooks")
+    if sum(len(re.findall(r'\bdata-flipbook(?:\s|=)', html, flags=re.I)) for html in html_source.values()) != 5: errors.append("site must contain exactly five final flipbooks")
 
     healthcare = html_source.get(Path("work/healthcare-simulation.html"), "")
-    for title in ("Self-directed course architecture and searchable learning", "Interactive video, decisions and feedback", "Instructor-led training, simulation and evaluation"):
+    if "<h1>ADHD diagnostic-interview training for healthcare professionals</h1>" not in healthcare: errors.append("missing exact CHEO project H1")
+    for title in ("A self-directed ADHD diagnostic-interview course", "Interactive interview practice", "Actor-based simulation and evaluation"):
         if f"<h2>{title}</h2>" not in healthcare: errors.append(f"missing CHEO example title: {title}")
     if healthcare.count('class="media-card"') != 2 or healthcare.count("<video ") != 2: errors.append("CHEO must contain two video cards")
-    expected_storyboard = ["01 Set the context", "02 Observe the interview", "03 Identify the first error", "04 Choose a better probe", "05 Review the reasoning", "06 Continue to feedback"]
-    if re.findall(r'class="storyboard-step__label">([^<]+)', healthcare) != expected_storyboard: errors.append("CHEO storyboard labels or order are incorrect")
+    for required in (
+        "Questioning and Rating Practice",
+        "Interactive video in which learners practise choosing effective questions and assigning ratings from interview evidence.",
+        "Informant Problem Solving",
+        "Interactive video focused on responding to challenges that arise while interviewing an informant.",
+        "Interviewer Error Analysis",
+        "Six-screen flipbook showing how learners identify an interviewer error, choose a better approach and review the reasoning.",
+    ):
+        if required not in healthcare: errors.append(f"missing exact CHEO interaction text: {required}")
+    expected_storyboard = ["Set the context", "Observe the interview", "Identify the first error", "Choose a better probe", "Review the reasoning", "Continue to feedback"]
+    if re.findall(r'<figcaption class="artifact-caption"><strong>([^<]+)</strong>', healthcare)[3:9] != expected_storyboard: errors.append("CHEO storyboard labels or order are incorrect")
+    if healthcare.count('class="flipbook__slide"') != 6: errors.append("Interviewer Error Analysis flipbook must contain six slides")
+    if "applied-instructional-design-process.svg" in healthcare: errors.append("retrospective CHEO process diagram remains visible")
     healthcare_parser = pages.get((ROOT / "work/healthcare-simulation.html").resolve())
     if healthcare_parser:
         if len(healthcare_parser.videos) != 2: errors.append("CHEO video element count is not two")
@@ -274,17 +306,30 @@ def main() -> int:
         if len(video_sources) != 4 or {source.get("type") for source in video_sources} != {"video/mp4", "video/webm"}: errors.append("video cards require WebM and MP4 sources")
 
     tfac = html_source.get(Path("work/life-skills-curriculum.html"), "")
-    for title in ("Team Girl Malawi learner workbook", "Codifying a participatory learning methodology", "Facilitator development, delivery and evaluation"):
+    if "<h1>Participatory curricula and facilitator training</h1>" not in tfac: errors.append("missing exact Theatre for a Change project H1")
+    for title in ("A 90-activity life-skills manual", "Learner resources and narrative activities", "Participatory methodology and facilitator tools"):
         if f"<h2>{title}</h2>" not in tfac: errors.append(f"missing TfaC example title: {title}")
-    if "evidence-collage--four" not in tfac or tfac.count("evidence-collage--three") < 2: errors.append("TfaC collage structure is incomplete")
     if "20 youth peer educators" in tfac: errors.append("unsupported youth peer educator wording remains")
-    if tfac.count('class="flipbook__slide"') != 3: errors.append("Life Skills flipbook must contain three slides")
+    if tfac.count('class="flipbook__slide"') != 17: errors.append("TfaC flipbooks must contain 5, 6 and 6 slides")
+    if tfac.count("life-skills-pages-") != 10: errors.append("Life Skills manual must use five full-resolution spread targets")
+    if tfac.count('class="facilitation-anchor"') != 1: errors.append("Eswatini facilitation photograph must remain one standalone anchor image")
 
     refugee = html_source.get(Path("work/refugee-sponsorship.html"), "")
-    for title in ("Online resource architecture", "Scenario-based decisions and reflection", "Adapting participatory learning for sponsor workshops"):
+    if "<h1>Training for refugee sponsorship groups</h1>" not in refugee: errors.append("missing exact Refugee Hub project H1")
+    for title in ("A four-stage online guide for sponsorship groups", "Practising difficult sponsorship decisions", "An in-person sponsorship training manual"):
         if f"<h2>{title}</h2>" not in refugee: errors.append(f"missing Refugee Hub example title: {title}")
-    if "evidence-collage--two" not in refugee or "evidence-collage--three" not in refugee: errors.append("Refugee Hub online collages are incomplete")
-    if refugee.count('class="flipbook__slide"') != 3: errors.append("sponsor-workshop flipbook must contain three slides")
+    if "evidence-collage--three" not in refugee: errors.append("Refugee Hub online-guide collage is incomplete")
+    if refugee.count('class="flipbook__slide"') != 6: errors.append("sponsorship-manual flipbook must contain six authenticated full manual pages")
+
+    project_html = "\n".join(html_source.get(path, "") for path in role_expectations)
+    triggers = re.findall(r'<a\b[^>]*class="[^"]*evidence-trigger[^"]*"[^>]*>', project_html, flags=re.I)
+    if len(triggers) != 37: errors.append(f"expected 37 modal-enabled evidence images, found {len(triggers)}")
+    for trigger in triggers:
+        for attribute in ("href", "aria-label", "data-evidence-title", "data-evidence-caption"):
+            if not re.search(rf'\b{attribute}="[^"]+"', trigger, flags=re.I): errors.append(f"evidence trigger missing {attribute}: {trigger[:120]}")
+    script = (ROOT / "assets/js/site.js").read_text(encoding="utf-8")
+    for marker in ('createElement("dialog")', 'Full-resolution evidence viewer', "history.pushState", "history.replaceState", 'addEventListener("popstate"', "showModal()", "touchstart", "focus({ preventScroll: true })"):
+        if marker not in script: errors.append(f"modal implementation marker missing: {marker}")
 
     for relative, (minimum, maximum) in PAGE_WORD_TARGETS.items():
         count = len(re.findall(r"[\w’'-]+", main_visible_text(html_source.get(relative, "")), flags=re.UNICODE))
@@ -299,6 +344,8 @@ def main() -> int:
     for item in ROOT.rglob("*"):
         if not item.is_file() or ".git" in item.parts: continue
         if item.suffix.lower() in FORBIDDEN_SUFFIXES: errors.append(f"prohibited source/archive file in public tree: {item.relative_to(ROOT).as_posix()}")
+        if item.suffix.lower() == ".pdf" and item.relative_to(ROOT) != Path("assets/documents/ben-hudson-instructional-designer-resume.pdf"):
+            errors.append(f"unexpected PDF in public tree: {item.relative_to(ROOT).as_posix()}")
         if item.name in {"Interactive Video Example #1.mp4", "Interactive Video Example #2.mp4"}: errors.append(f"full source video in public tree: {item.relative_to(ROOT).as_posix()}")
     for relative in NEW_RASTERS:
         path = ROOT / relative
@@ -318,7 +365,7 @@ def main() -> int:
 
     print(f"PASS {len(pages)}/{len(EXPECTED_HTML)} HTML pages checked")
     print("PASS internal links and local assets" if not any("link" in error or "asset" in error for error in errors) else "FAIL internal links or assets")
-    print("PASS intended 3/4/3 role-page structure and exactly two flipbooks" if not any("work examples" in error or "flipbook" in error for error in errors) else "FAIL role-page structure")
+    print("PASS intended 3/3/3 project-page structure and five final flipbooks" if not any("work examples" in error or "flipbook" in error for error in errors) else "FAIL project-page structure")
     print("PASS two accessible video cards and six storyboard steps" if not any("video" in error.lower() or "storyboard" in error.lower() for error in errors) else "FAIL video or storyboard checks")
     print(f"PASS {len(REQUIRED_EVIDENCE)} required evidence derivatives checked" if not any("required file" in error for error in errors) else "FAIL required evidence")
     print("PASS source, privacy and metadata boundaries" if not any(word in error for error in errors for word in ("metadata", "source", "private", "prohibited")) else "FAIL source or privacy boundaries")
