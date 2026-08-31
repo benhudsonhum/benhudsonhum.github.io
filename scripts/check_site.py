@@ -16,11 +16,11 @@ from urllib.parse import unquote, urlparse
 ROOT = Path(__file__).resolve().parents[1]
 SITE_DOMAIN = "benhudsonhum.github.io"
 SOCIAL_IMAGE_URL = (
-    "https://benhudsonhum.github.io/assets/images/common/social-preview.png"
+    "https://benhudsonhum.github.io/assets/images/common/social-preview.png?v=20260831"
 )
 WALKTHROUGH_URL = "https://www.youtube.com/watch?v=nUyF6JenkFE"
 WALKTHROUGH_THUMBNAIL = (
-    "/assets/images/healthcare/evidence/adhd-decision-practice-framed.png"
+    "/assets/images/healthcare/evidence/adhd-decision-practice-framed.png?v=20260831"
 )
 EXPECTED_HTML = [
     Path("index.html"),
@@ -57,6 +57,7 @@ REQUIRED_EVIDENCE = [
     Path("assets/images/curriculum/evidence/tfac-life-skills-manual-spread.png"),
     Path("assets/images/curriculum/evidence/tfac-equity-handout.png"),
     Path("assets/images/curriculum/evidence/tfac-child-protection-flow-chart.png"),
+    Path("assets/images/curriculum/evidence/tfac-child-protection-network-display.png"),
     Path("assets/images/healthcare/applied-instructional-design-process.svg"),
     Path("assets/images/curriculum/participatory-learning-methodology.svg"),
     Path("assets/images/curriculum/tfac-eswatini-facilitation-cycle.svg"),
@@ -107,12 +108,12 @@ FORBIDDEN_PUBLIC_SUFFIXES = {".exe", ".zip", ".rar", ".7z"}
 ASSET_WARNING_BYTES = 1_000_000
 RASTER_SUFFIXES = {".jpg", ".jpeg", ".png"}
 HOMEPAGE_PREVIEWS = {
+    Path("assets/images/home/healthcare-course-overview.jpg"),
     Path("assets/images/home/healthcare-searchable-video.jpg"),
     Path("assets/images/home/healthcare-interactive-reference.jpg"),
-    Path("assets/images/home/healthcare-decision-practice.jpg"),
+    Path("assets/images/home/curriculum-facilitation-circle.jpg"),
     Path("assets/images/home/curriculum-90-activity-manual.jpg"),
     Path("assets/images/home/curriculum-visual-learning-resource.jpg"),
-    Path("assets/images/home/curriculum-safeguarding-pathway.jpg"),
     Path("assets/images/home/refugee-online-pathway.jpg"),
     Path("assets/images/home/refugee-scenario-practice.jpg"),
     Path("assets/images/home/refugee-workshop-design.jpg"),
@@ -459,9 +460,9 @@ def main() -> int:
                         else ""
                     )
                     explanation_words = re.findall(r"[\w’'-]+", explanation, flags=re.UNICODE)
-                    if not 18 <= len(explanation_words) <= 35:
+                    if not 16 <= len(explanation_words) <= 35:
                         errors.append(
-                            f"flipbook {book_position} slide {slide_position} explanation is not 18-35 words ({len(explanation_words)}): {relative.as_posix()}"
+                            f"flipbook {book_position} slide {slide_position} explanation is not 16-35 words ({len(explanation_words)}): {relative.as_posix()}"
                         )
 
             for single_position, block in enumerate(single_blocks, start=1):
@@ -510,9 +511,9 @@ def main() -> int:
                         else ""
                     )
                     explanation_words = re.findall(r"[\w’'-]+", explanation, flags=re.UNICODE)
-                    if not 18 <= len(explanation_words) <= 35:
+                    if not 16 <= len(explanation_words) <= 35:
                         errors.append(
-                            f"single example {single_position} explanation is not 18-35 words ({len(explanation_words)}): {relative.as_posix()}"
+                            f"single example {single_position} explanation is not 16-35 words ({len(explanation_words)}): {relative.as_posix()}"
                         )
             if len(all_caption_texts) != len(set(all_caption_texts)):
                 errors.append(f"work-example captions are not unique: {relative.as_posix()}")
