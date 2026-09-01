@@ -285,7 +285,6 @@ li + li { margin-top: 0.45rem; }
 /* 12. About page */
 .about-hero { padding-block: var(--space-6); }
 .about-hero__content { display: grid; gap: var(--space-3); max-width: var(--wide-reading); }
-.about-hero__content > p:last-child { color: var(--color-text-muted); font-size: var(--text-lg); }
 .principle-grid, .detail-grid { display: grid; gap: var(--space-3); }
 .principle { padding: var(--space-3); border-left: 2px solid var(--color-accent); background: var(--color-surface); }
 .principle h3 { margin-bottom: var(--space-1); }

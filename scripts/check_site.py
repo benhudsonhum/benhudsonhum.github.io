@@ -268,7 +268,7 @@ def main() -> int:
     if re.search(r"artifact-fullsize|View full-size", "\n".join(html_source.values()), flags=re.I): errors.append("visible View full-size link or obsolete artifact-fullsize markup remains")
 
     role_expectations = {
-        Path("work/healthcare-simulation.html"): (3, 1), Path("work/life-skills-curriculum.html"): (3, 3), Path("work/refugee-sponsorship.html"): (3, 1),
+        Path("work/healthcare-simulation.html"): (2, 1), Path("work/life-skills-curriculum.html"): (3, 3), Path("work/refugee-sponsorship.html"): (2, 1),
     }
     for relative, (example_count, flipbook_count) in role_expectations.items():
         html = html_source.get(relative, "")
@@ -280,7 +280,7 @@ def main() -> int:
 
     healthcare = html_source.get(Path("work/healthcare-simulation.html"), "")
     if "<h1>ADHD diagnostic-interview training for healthcare professionals</h1>" not in healthcare: errors.append("missing exact CHEO project H1")
-    for title in ("A self-directed ADHD diagnostic-interview course", "Interactive interview practice", "Actor-based simulation and evaluation"):
+    for title in ("A self-directed ADHD diagnostic-interview course", "Interactive interview practice"):
         if f"<h2>{title}</h2>" not in healthcare: errors.append(f"missing CHEO example title: {title}")
     if healthcare.count('class="media-card"') != 2 or healthcare.count("<video ") != 2: errors.append("CHEO must contain two video cards")
     for required in (
@@ -316,9 +316,9 @@ def main() -> int:
 
     refugee = html_source.get(Path("work/refugee-sponsorship.html"), "")
     if "<h1>Training for refugee sponsorship groups</h1>" not in refugee: errors.append("missing exact Refugee Hub project H1")
-    for title in ("A four-stage online guide for sponsorship groups", "Practising difficult sponsorship decisions", "An in-person sponsorship training manual"):
+    for title in ("A Training In Four Parts", "An in-person sponsorship training manual"):
         if f"<h2>{title}</h2>" not in refugee: errors.append(f"missing Refugee Hub example title: {title}")
-    if "evidence-collage--three" not in refugee: errors.append("Refugee Hub online-guide collage is incomplete")
+    if "evidence-collage--four" not in refugee: errors.append("Refugee Hub online-training collage is incomplete")
     if refugee.count('class="flipbook__slide"') != 6: errors.append("sponsorship-manual flipbook must contain six authenticated full manual pages")
 
     project_html = "\n".join(html_source.get(path, "") for path in role_expectations)
@@ -365,7 +365,7 @@ def main() -> int:
 
     print(f"PASS {len(pages)}/{len(EXPECTED_HTML)} HTML pages checked")
     print("PASS internal links and local assets" if not any("link" in error or "asset" in error for error in errors) else "FAIL internal links or assets")
-    print("PASS intended 3/3/3 project-page structure and five final flipbooks" if not any("work examples" in error or "flipbook" in error for error in errors) else "FAIL project-page structure")
+    print("PASS intended 2/3/2 project-page structure and five final flipbooks" if not any("work examples" in error or "flipbook" in error for error in errors) else "FAIL project-page structure")
     print("PASS two accessible video cards and six storyboard steps" if not any("video" in error.lower() or "storyboard" in error.lower() for error in errors) else "FAIL video or storyboard checks")
     print(f"PASS {len(REQUIRED_EVIDENCE)} required evidence derivatives checked" if not any("required file" in error for error in errors) else "FAIL required evidence")
     print("PASS source, privacy and metadata boundaries" if not any(word in error for error in errors for word in ("metadata", "source", "private", "prohibited")) else "FAIL source or privacy boundaries")
