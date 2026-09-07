@@ -3,6 +3,7 @@
 
   const storageKey = "portfolio-theme";
   const root = document.documentElement;
+  root.classList.add("js-enabled");
   const colourScheme = window.matchMedia("(prefers-color-scheme: light)");
   const savedTheme = () => {
     try {
@@ -54,6 +55,8 @@
     if (slides.length < 2 || !previous || !next || !status) return;
     let current = 0;
     flipbook.classList.add("is-enhanced");
+    const hint = flipbook.querySelector(".flipbook__hint");
+    if (hint) hint.textContent = "Use Previous, Next, Home, End or the arrow keys. Select an image to enlarge it.";
     const showSlide = (index) => {
       current = Math.max(0, Math.min(index, slides.length - 1));
       slides.forEach((slide, slideIndex) => {

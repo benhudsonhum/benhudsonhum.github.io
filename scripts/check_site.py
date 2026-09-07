@@ -84,15 +84,9 @@ REQUIRED_EVIDENCE = [
     )],
 ]
 HOMEPAGE_PREVIEWS = {
-    Path("assets/images/home/healthcare-interactive-video.jpg"),
-    Path("assets/images/home/healthcare-searchable-learning.jpg"),
-    Path("assets/images/home/healthcare-course-structure.jpg"),
-    Path("assets/images/home/curriculum-facilitation.jpg"),
-    Path("assets/images/home/curriculum-team-girl-workbook.jpg"),
-    Path("assets/images/home/curriculum-workshop-journey.jpg"),
+    Path("assets/images/healthcare/video/adhd-question-choice-poster.jpg"),
+    Path("assets/images/curriculum/evidence/tfac-eswatini-facilitation-public.jpg"),
     Path("assets/images/home/refugee-online-resource.jpg"),
-    Path("assets/images/home/refugee-scenario-practice.jpg"),
-    Path("assets/images/home/refugee-sponsor-workshops.jpg"),
 }
 OBSOLETE_PATHS = (
     "system-map.svg", "healthcare-course-overview.jpg",
@@ -248,12 +242,13 @@ def main() -> int:
 
     index = html_source.get(Path("index.html"), "")
     if re.search(r"aria-labelledby=\"approach-title\"|system-map\.svg", index, flags=re.I): errors.append("homepage Approach section or system map remains")
-    if index.count('class="practice-summary-item"') != 4 or 'aria-label="Practice summary"' not in index: errors.append("homepage practice summary must contain four items")
+    if 'class="hero__credentials"' not in index or 'aria-label="Practice summary"' not in index: errors.append("homepage compact credentials are missing")
     if re.search(r"<dt>\s*(48|90)\s*</dt>", index): errors.append("homepage practice summary still uses 48 or 90 as a headline")
-    home_sources = {Path(urlparse(value).path.lstrip("/")) for value in re.findall(r'<img\b[^>]*src="(/assets/images/home/[^"]+)"', index, flags=re.I)}
-    if home_sources != HOMEPAGE_PREVIEWS: errors.append("homepage collage source set does not match the nine semantic previews")
-    if index.count("mini-collage__label") != 9: errors.append("homepage must contain nine collage labels")
-    homepage_bytes = sum((ROOT / item).stat().st_size for item in HOMEPAGE_PREVIEWS if (ROOT / item).is_file())
+    home_figures = re.findall(r'<figure class="project-card__visual".*?</figure>', index, flags=re.S)
+    home_sources = {Path(urlparse(value).path.lstrip("/")) for value in re.findall(r'<img\b[^>]*src="([^"]+)"', "".join(home_figures), flags=re.I)}
+    if home_sources != HOMEPAGE_PREVIEWS: errors.append("homepage lead images do not match selected project evidence")
+    if len(home_figures) != 3 or any(figure.count('<img ') != 1 or '<figcaption' not in figure for figure in home_figures): errors.append("each homepage project needs one image and a caption")
+    homepage_bytes = sum((ROOT / item).stat().st_size for item in HOMEPAGE_PREVIEWS if (ROOT / item).is_file()) + (ROOT / 'index.html').stat().st_size + (ROOT / 'assets/css/site.css').stat().st_size + (ROOT / 'assets/js/site.js').stat().st_size + (ROOT / 'assets/images/common/ben-hudson-portrait-desktop-696x870.jpg').stat().st_size
     if homepage_bytes >= 1_500_000: errors.append(f"homepage preview transfer exceeds 1.5 MB: {homepage_bytes:,} bytes")
 
     exact_home_strings = (
@@ -263,7 +258,7 @@ def main() -> int:
         "Training for refugee sponsorship groups",
     )
     for required in exact_home_strings:
-        if required not in index: errors.append(f"missing exact homepage text: {required}")
+        if required not in re.sub(r'<[^>]+>', '', index): errors.append(f"missing exact homepage text: {required}")
     if "professional audiences" in index.casefold(): errors.append("homepage proposition still contains professional audiences")
     if re.search(r"artifact-fullsize|View full-size", "\n".join(html_source.values()), flags=re.I): errors.append("visible View full-size link or obsolete artifact-fullsize markup remains")
 
@@ -293,7 +288,8 @@ def main() -> int:
     ):
         if required not in healthcare: errors.append(f"missing exact CHEO interaction text: {required}")
     expected_storyboard = ["Set the context", "Observe the interview", "Identify the first error", "Choose a better probe", "Review the reasoning", "Continue to feedback"]
-    if re.findall(r'<figcaption class="artifact-caption"><strong>([^<]+)</strong>', healthcare)[3:9] != expected_storyboard: errors.append("CHEO storyboard labels or order are incorrect")
+    storyboard = re.search(r'data-flipbook-id="interviewer-error-analysis".*?</section>', healthcare, flags=re.S)
+    if not storyboard or re.findall(r'<figcaption class="artifact-caption"><strong>([^<]+)</strong>', storyboard.group())[0:6] != expected_storyboard: errors.append("CHEO storyboard labels or order are incorrect")
     if healthcare.count('class="flipbook__slide"') != 6: errors.append("Interviewer Error Analysis flipbook must contain six slides")
     if "applied-instructional-design-process.svg" in healthcare: errors.append("retrospective CHEO process diagram remains visible")
     healthcare_parser = pages.get((ROOT / "work/healthcare-simulation.html").resolve())
