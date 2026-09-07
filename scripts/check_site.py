@@ -86,7 +86,7 @@ REQUIRED_EVIDENCE = [
 HOMEPAGE_PREVIEWS = {
     Path("assets/images/healthcare/video/adhd-question-choice-poster.jpg"),
     Path("assets/images/curriculum/evidence/tfac-eswatini-facilitation-public.jpg"),
-    Path("assets/images/refugee/evidence/refugee-online-resource-overview.webp"),
+    Path("assets/images/home/refugee-training-banner.webp"),
 }
 OBSOLETE_PATHS = (
     "system-map.svg", "healthcare-course-overview.jpg",
